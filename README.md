@@ -180,3 +180,13 @@ docker compose run --rm tests
 
 ## Status da entrega
 Código, documentação, Test Harness, Docker e CI estão preparados neste pacote. A suíte foi executada localmente neste ambiente em 08/09/2026, com **16 testes aprovados**; o log real está em `docs/test-results/pytest.log` e o JUnit em `docs/test-results/junit.xml`. A equipe ainda precisa criar a governança real no GitHub, executar Docker/CI em seu ambiente, registrar uso real do agente, coletar evidências e preencher os dados de identificação.
+
+## Fluxo de desenvolvimento
+
+O projeto utiliza um fluxo baseado em branches para organizar o desenvolvimento:
+
+- `main`: versão estável do projeto.
+- `develop`: integração das alterações em desenvolvimento.
+- `feature/*`: desenvolvimento de novas funcionalidades ou melhorias.
+
+As alterações desenvolvidas em branches `feature/*` devem ser enviadas por Pull Request para `develop` antes de serem integradas.
