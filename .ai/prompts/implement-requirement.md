@@ -1,0 +1,1 @@
+Implemente o requisito [ID] de `docs/specification/specification.md`. Antes de editar, identifique camadas impactadas. Preserve a arquitetura, implemente o mínimo necessário e adicione testes de cenário principal e borda. Ao final, informe arquivos alterados e resultado de `pytest` sem inventar execução.
