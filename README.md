@@ -200,3 +200,13 @@ O projeto utiliza um fluxo baseado em branches para organizar o desenvolvimento:
 - `feature/*`: desenvolvimento de novas funcionalidades ou melhorias.
 
 As alterações desenvolvidas em branches `feature/*` devem ser enviadas por Pull Request para `develop` antes de serem integradas.
+
+## Fluxo de desenvolvimento
+
+O projeto utiliza um fluxo baseado em branches para organizar o desenvolvimento:
+
+- `main`: versão estável do projeto.
+- `develop`: integração das alterações em desenvolvimento.
+- `feature/*`: desenvolvimento de novas funcionalidades ou melhorias.
+
+As alterações desenvolvidas em branches `feature/*` devem ser enviadas por Pull Request para `develop` antes de serem integradas.
