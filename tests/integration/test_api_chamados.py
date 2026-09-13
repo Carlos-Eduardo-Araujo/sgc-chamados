@@ -12,9 +12,11 @@ def test_health(client):
 
     data = response.json()
 
-    assert data["status"] == "ok"
-    assert data["service"] == "sgc-chamados"
-    assert data["version"] == "1.0.0"
+    assert data == {
+        "status": "ok",
+        "service": "sgc-chamados",
+        "version": "1.0.0",
+    }
 
 def test_rf01_criar_chamado_valido(client):
     response = novo_chamado(client, "ALTA")
