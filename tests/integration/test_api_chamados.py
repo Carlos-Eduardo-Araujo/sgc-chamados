@@ -7,8 +7,14 @@ def novo_chamado(client, prioridade="MEDIA"):
 
 def test_health(client):
     response = client.get("/health")
+
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+
+    data = response.json()
+
+    assert data["status"] == "ok"
+    assert data["service"] == "sgc-chamados"
+    assert data["version"] == "1.0.0"
 
 def test_rf01_criar_chamado_valido(client):
     response = novo_chamado(client, "ALTA")
