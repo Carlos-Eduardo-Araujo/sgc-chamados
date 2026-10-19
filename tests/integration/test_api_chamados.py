@@ -7,16 +7,10 @@ def novo_chamado(client, prioridade="MEDIA"):
 
 def test_health(client):
     response = client.get("/health")
-
     assert response.status_code == 200
-
-    data = response.json()
-
-    assert data == {
-        "status": "ok",
-        "service": "sgc-chamados",
-        "version": "1.0.0",
-    }
+    assert response.json()["status"] == "ok"
+    assert response.json()["service"] == "sgc-chamados"
+    assert response.json()["version"] == "1.0.0"
 
 def test_rf01_criar_chamado_valido(client):
     response = novo_chamado(client, "ALTA")
@@ -89,4 +83,88 @@ def test_rn02_impedir_alteracao_de_chamado_encerrado(client):
     chamado_id = novo_chamado(client).json()["id"]
     client.patch(f"/chamados/{chamado_id}/status", json={"status": "CANCELADO"})
     response = client.patch(f"/chamados/{chamado_id}/prioridade", json={"prioridade": "ALTA"})
+    assert response.status_code == 409
+
+
+def test_rf07_rejeitar_titulo_curto_apos_remover_espacos(client):
+    response = client.post("/chamados", json={
+        "titulo": "  a  ",
+        "descricao": "Descrição válida",
+        "prioridade": "MEDIA",
+    })
+    assert response.status_code == 422
+    assert client.get("/chamados").json() == []
+
+
+def test_rf07_rejeitar_descricao_curta_apos_remover_espacos(client):
+    response = client.post("/chamados", json={
+        "titulo": "Título válido",
+        "descricao": "    a",
+        "prioridade": "MEDIA",
+    })
+    assert response.status_code == 422
+    assert client.get("/chamados").json() == []
+
+
+def test_rf06_rejeitar_responsavel_curto_apos_remover_espacos(client):
+    chamado_id = novo_chamado(client).json()["id"]
+    response = client.patch(
+        f"/chamados/{chamado_id}/responsavel",
+        json={"responsavel": "  a  "},
+    )
+    assert response.status_code == 422
+    detalhe = client.get(f"/chamados/{chamado_id}").json()
+    assert detalhe["responsavel"] is None
+
+
+def test_rn02_aberto_pode_ser_cancelado(client):
+    chamado_id = novo_chamado(client).json()["id"]
+    response = client.patch(
+        f"/chamados/{chamado_id}/status",
+        json={"status": "CANCELADO"},
+    )
+    assert response.status_code == 200
+    assert response.json()["status"] == "CANCELADO"
+
+
+def test_rn03_em_andamento_pode_ser_cancelado(client):
+    chamado_id = novo_chamado(client).json()["id"]
+    client.patch(f"/chamados/{chamado_id}/status", json={"status": "EM_ANDAMENTO"})
+    response = client.patch(
+        f"/chamados/{chamado_id}/status",
+        json={"status": "CANCELADO"},
+    )
+    assert response.status_code == 200
+    assert response.json()["status"] == "CANCELADO"
+
+
+def test_rn04_cancelado_e_estado_final(client):
+    chamado_id = novo_chamado(client).json()["id"]
+    client.patch(f"/chamados/{chamado_id}/status", json={"status": "CANCELADO"})
+    response = client.patch(
+        f"/chamados/{chamado_id}/status",
+        json={"status": "EM_ANDAMENTO"},
+    )
+    assert response.status_code == 409
+
+
+def test_rn04_resolvido_e_estado_final(client):
+    chamado_id = novo_chamado(client).json()["id"]
+    client.patch(f"/chamados/{chamado_id}/status", json={"status": "EM_ANDAMENTO"})
+    client.patch(f"/chamados/{chamado_id}/status", json={"status": "RESOLVIDO"})
+    response = client.patch(
+        f"/chamados/{chamado_id}/status",
+        json={"status": "CANCELADO"},
+    )
+    assert response.status_code == 409
+
+
+def test_rn05_resolvido_nao_permite_alterar_responsavel(client):
+    chamado_id = novo_chamado(client).json()["id"]
+    client.patch(f"/chamados/{chamado_id}/status", json={"status": "EM_ANDAMENTO"})
+    client.patch(f"/chamados/{chamado_id}/status", json={"status": "RESOLVIDO"})
+    response = client.patch(
+        f"/chamados/{chamado_id}/responsavel",
+        json={"responsavel": "Equipe N2"},
+    )
     assert response.status_code == 409

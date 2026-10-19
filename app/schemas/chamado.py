@@ -19,12 +19,12 @@ class ChamadoCreate(BaseModel):
     descricao: str = Field(min_length=5, max_length=2000)
     prioridade: Prioridade = Prioridade.MEDIA
 
-    @field_validator("titulo", "descricao")
+    @field_validator("titulo", "descricao", mode="before")
     @classmethod
-    def not_blank(cls, value: str):
-        if not value.strip():
-            raise ValueError("campo não pode conter apenas espaços")
-        return value.strip()
+    def strip_text_before_validation(cls, value):
+        if isinstance(value, str):
+            return value.strip()
+        return value
 
 class StatusUpdate(BaseModel):
     status: Status
@@ -35,12 +35,12 @@ class PrioridadeUpdate(BaseModel):
 class ResponsavelUpdate(BaseModel):
     responsavel: str = Field(min_length=2, max_length=120)
 
-    @field_validator("responsavel")
+    @field_validator("responsavel", mode="before")
     @classmethod
-    def not_blank(cls, value: str):
-        if not value.strip():
-            raise ValueError("responsável não pode conter apenas espaços")
-        return value.strip()
+    def strip_responsavel_before_validation(cls, value):
+        if isinstance(value, str):
+            return value.strip()
+        return value
 
 class ChamadoResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)

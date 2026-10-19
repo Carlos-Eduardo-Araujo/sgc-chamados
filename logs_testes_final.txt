@@ -1,0 +1,12 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\Isabella Silva\Downloads\sgc-chamados-entrega-inicial\sgc-chamados
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1
+collected 24 items
+
+tests\integration\test_api_chamados.py ......................            [ 91%]
+tests\unit\test_status_rules.py ..                                       [100%]
+
+======================= 24 passed, 15 warnings in 0.30s =======================

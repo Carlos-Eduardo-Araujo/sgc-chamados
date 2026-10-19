@@ -15,7 +15,7 @@ Inclui criação, listagem, consulta individual, alteração de status, priorida
 ## 2. Requisitos funcionais
 | ID | Descrição | Critério de aceite |
 |---|---|---|
-| RF01 | Criar chamado com título, descrição e prioridade. | POST válido retorna 201 e status inicial ABERTO. |
+| RF01 | Criar chamado com título e descrição, permitindo informar a prioridade opcionalmente. Quando a prioridade não for enviada, assumir MEDIA. | POST válido retorna 201, status inicial ABERTO e prioridade informada ou MEDIA por padrão. |
 | RF02 | Listar chamados. | GET retorna 200 e lista ordenada por ID, inclusive vazia. |
 | RF03 | Consultar chamado por ID. | Existente retorna 200; inexistente retorna 404. |
 | RF04 | Alterar status. | Transição permitida retorna 200; inválida retorna 409. |
@@ -43,11 +43,12 @@ Inclui criação, listagem, consulta individual, alteração de status, priorida
 | RN05 | Chamado encerrado não pode ter prioridade ou responsável alterados. |
 | RN06 | Prioridade deve ser BAIXA, MEDIA, ALTA ou CRITICA. |
 | RN07 | Título deve possuir 3 a 120 caracteres e descrição 5 a 2000. |
+| RN08 | A prioridade é opcional na criação do chamado; quando omitida, seu valor deve ser MEDIA. |
 
 ## 5. Contratos de entrada/saída
 ### POST /chamados
-Entrada: `{ "titulo": string, "descricao": string, "prioridade": "BAIXA|MEDIA|ALTA|CRITICA" }`.
-Sucesso: 201 com chamado criado. Erro de validação: 422.
+Entrada: `{ "titulo": string, "descricao": string, "prioridade"?: "BAIXA|MEDIA|ALTA|CRITICA" }`. O campo `prioridade` é opcional; quando omitido, a API deve atribuir `MEDIA`.
+Sucesso: 201 com chamado criado, status `ABERTO` e prioridade informada ou `MEDIA` por padrão. Erro de validação: 422 para título, descrição ou prioridade inválidos.
 
 ### GET /chamados
 Entrada: nenhuma. Sucesso: 200 com lista de chamados.
@@ -90,10 +91,10 @@ flowchart LR
 
 A arquitetura em camadas reduz acoplamento e permite testar regras sem misturar responsabilidades.
 
-## Critérios de aceite
 
-- Os requisitos funcionais devem estar relacionados às funcionalidades implementadas pela API.
-- Os requisitos não funcionais devem ser verificáveis por meio da configuração do projeto e dos testes.
-- As regras de negócio devem ser refletidas na implementação e nos casos de teste.
-- Os contratos de entrada e saída devem possuir validação compatível com os schemas da aplicação.
-- Cada unidade descrita na especificação deve ser passível de validação independente.
+## 8. Histórico de alterações da especificação
+| Versão | Data | Alteração | Motivo |
+|---|---|---|---|
+| 1.1 | 18/10/2026 | RF01 e contrato de `POST /chamados` esclarecem que `prioridade` é opcional e assume `MEDIA` quando omitida; inclusão da RN08. | Decisão de manter explícito na especificação o comportamento já adotado pela implementação e confirmado durante a revisão da Entrega 2. |
+
+> Esta atualização registra uma clarificação de requisito aprovada durante a revisão. Não representa, por si só, um erro histórico encontrado em teste nem uma reespecificação retroativa.
