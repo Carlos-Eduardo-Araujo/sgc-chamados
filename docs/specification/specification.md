@@ -89,3 +89,11 @@ flowchart LR
 ```
 
 A arquitetura em camadas reduz acoplamento e permite testar regras sem misturar responsabilidades.
+
+## Critérios de aceite
+
+- Os requisitos funcionais devem estar relacionados às funcionalidades implementadas pela API.
+- Os requisitos não funcionais devem ser verificáveis por meio da configuração do projeto e dos testes.
+- As regras de negócio devem ser refletidas na implementação e nos casos de teste.
+- Os contratos de entrada e saída devem possuir validação compatível com os schemas da aplicação.
+- Cada unidade descrita na especificação deve ser passível de validação independente.

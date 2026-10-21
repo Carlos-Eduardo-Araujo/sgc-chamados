@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from app.database import Base, engine
 from app.routes.chamados import router as chamados_router
 
@@ -10,8 +11,14 @@ app = FastAPI(
     description="API acadêmica para registro e acompanhamento de chamados de suporte.",
 )
 
+
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "service": "sgc-chamados",
+        "version": app.version,
+    }
+
 
 app.include_router(chamados_router)
